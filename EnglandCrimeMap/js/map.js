@@ -1,4 +1,19 @@
-export const map = L.map("mainMap").setView([54.13, -3.5], 6);
+// Store the current markers and where they are.
+let currentMarkers = [];
+let currentMarkerLocations = [];
+
+let map = L.map("mainMap");
+
+// Clear memory of all markers.
+export function clearMarkers() {
+    currentMarkers.forEach(marker => {map.removeLayer(marker);});
+    currentMarkerLocations = [];
+    currentMarkers = [];
+}
+
+export function focusMap(lat, lng, zoom) {
+    map.setView([lat, lng], zoom);
+}
 
 export function setupMap() {
     L.tileLayer(
@@ -11,7 +26,24 @@ export function setupMap() {
     ).addTo(map);
 }
 
+// Takes a crime category, a lat, and a lng. Add a marker to the map with a popup that shows the category.
+// Only adds the marker if there isn't already one there.
 export function addCrimeMarker(category, lat, lng) {
-    const m = L.marker([lat, lng]).addTo(map);
-    m.bindPopup(category);
+    // Rounds to 5 decimal places, see https://stackoverflow.com/a/29494612/6396652.
+    lat = Math.round(lat * 1e5) / 1e5;
+    lng = Math.round(lng * 1e5) / 1e5;
+
+    const latString = lat.toString();
+    const lngString = lng.toString();
+
+    // This allows easy storage of the exact location in an array with the ability to check for it (using includes).
+    const location = latString + lngString;
+
+    if (!currentMarkerLocations.includes(location)) {
+        const m = L.marker([lat, lng]).addTo(map);
+        m.bindPopup(category);
+
+        currentMarkerLocations.push(location);
+        currentMarkers.push(m);
+    }
 }

@@ -17,3 +17,18 @@ section {
 #right {
     left: 50vw;
 }
+
+input[type=text] {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 0.5em 0.5em;
+}
+
+#searchContainer {
+    margin: auto;
+    margin-top: 1em;
+    width: 25vw;
+}

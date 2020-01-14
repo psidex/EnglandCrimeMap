@@ -1,32 +1,58 @@
 import * as map from "./map.js";
 import * as crimes from "./crime.js";
 import * as stats from "./stats.js";
+import * as here from "./here.js";
 
-const CrimeMarkerAccuracy = 5;  // Within 1.11m - http://wiki.gis.com/wiki/index.php/Decimal_degrees.
+const searchBox = document.getElementById("searchBox");
 
-let currentMarkers = [];
+async function searchBoxSearch() {
+    if (searchBox.value !== "") {
+        const latLng = await here.findPlace(searchBox.value);
 
-window.addEventListener("load", async () => {
-    map.setupMap();
+        map.clearMarkers();
+        map.focusMap(latLng["Latitude"], latLng["Longitude"], 14);
 
-    const crimeArray = await crimes.getCrimes("52.629729", "-1.131592", "2017", "01");
+        const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(latLng["Latitude"], latLng["Longitude"], "2018", "01");
+        stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+    }
+}
 
-    for (const crime of crimeArray) {
+// Takes a place and date, adds markers for them, returns the total crime count and the frequency statistics.
+async function processAndMarkCrimes(lat, lng, year, month) {
+    const crimeDataArray = await crimes.getCrimes(lat, lng, year, month);
+    const crimeCategoryFreq = {};
 
-        const lat = parseFloat(crime.location.latitude).toFixed(CrimeMarkerAccuracy);
-        const lng = parseFloat(crime.location.longitude).toFixed(CrimeMarkerAccuracy);
+    for (const crimeObj of crimeDataArray) {
 
-        const latString = lat.toString();
-        const lngString = lng.toString();
-
-        const location = latString + lngString;
-
-        if (!currentMarkers.includes(location)) {
-            map.addCrimeMarker(crime.category, lat, lng);
-            currentMarkers.push(location);
+        // Process frequency of crime.
+        if (crimeCategoryFreq[crimeObj.category] === undefined) {
+            crimeCategoryFreq[crimeObj.category] = 1;
+        } else {
+            crimeCategoryFreq[crimeObj.category] += 1;
         }
+
+        // Process marker on map.
+        const lat = parseFloat(crimeObj.location.latitude);
+        const lng = parseFloat(crimeObj.location.longitude);
+        map.addCrimeMarker(crimeObj.category, lat, lng);
 
     }
 
-    stats.createChart();
+    return [crimeDataArray.length, crimeCategoryFreq];
+}
+
+window.addEventListener("load", async () => {
+    // Setup events.
+    searchBox.addEventListener("keyup", async function(event) {
+        if (event.key === "Enter") {
+            await searchBoxSearch();
+        }
+    });
+
+    const latLng = await here.findPlace("portsmouth");
+    map.setupMap();
+    map.focusMap(latLng["Latitude"], latLng["Longitude"], 14);
+
+    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(latLng["Latitude"], latLng["Longitude"], "2018", "01");
+    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
 });

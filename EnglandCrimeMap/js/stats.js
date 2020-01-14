@@ -1,5 +1,5 @@
-export function createChart() {
-    Highcharts.chart("container", {
+export function createPieChart(containerName, title, seriesName, seriesData) {
+    Highcharts.chart(containerName, {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -7,7 +7,7 @@ export function createChart() {
             type: "pie"
         },
         title: {
-            text: "Browser market shares in January, 2018"
+            text: title
         },
         tooltip: {
             pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
@@ -28,38 +28,27 @@ export function createChart() {
             }
         },
         series: [{
-            name: "Brands",
+            name: seriesName,
             colorByPoint: true,
-            data: [{
-                name: "Chrome",
-                y: 61.41,
-                sliced: true,
-                selected: true
-            }, {
-                name: "Internet Explorer",
-                y: 11.84
-            }, {
-                name: "Firefox",
-                y: 10.85
-            }, {
-                name: "Edge",
-                y: 4.67
-            }, {
-                name: "Safari",
-                y: 4.18
-            }, {
-                name: "Sogou Explorer",
-                y: 1.64
-            }, {
-                name: "Opera",
-                y: 1.6
-            }, {
-                name: "QQ",
-                y: 1.2
-            }, {
-                name: "Other",
-                y: 2.61
-            }]
+            data: seriesData
         }]
     });
+}
+
+// crimeCount should be a number, crimeCategoryFreq should be an object of category:count. This then takes them and
+// creates a pie chart showing the frequency of each category.
+export function createCrimeFreqChart(crimeCount, crimeCategoryFreq) {
+    const crimeFreqChartSeriesData = [];
+    const onePercent = crimeCount / 100;
+
+    for (const cat in crimeCategoryFreq) {
+        crimeFreqChartSeriesData.push(
+            {
+                name: cat,
+                y: crimeCategoryFreq[cat] / onePercent
+            }
+        );
+    }
+
+    createPieChart("crimeFreqContainer", "Crime Frequency", "Crime Frequency", crimeFreqChartSeriesData);
 }
