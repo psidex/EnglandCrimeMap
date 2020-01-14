@@ -5,12 +5,15 @@ import * as here from "./here.js";
 
 const searchBox = document.getElementById("searchBox");
 const crimeCountElement = document.getElementById("crimeCount");
+const loadingSection = document.getElementById("loadingSection");
 
 // Change location of crimes being shown.
-// TODO: Show user that data is being loaded and processed.
 async function changeLocation(lat, lng, focus=false) {
+    loadingSection.style.visibility = "visible";
+
     map.clearMarkers();
 
+    console.log(lat, lng);
     if (focus) {
         map.focusMap(lat, lng, 14);
     }
@@ -20,6 +23,8 @@ async function changeLocation(lat, lng, focus=false) {
     crimeCountElement.innerText = `Crime Count: ${crimeCount}`;
     map.drawCrimeRadius(lat, lng);
     stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+
+    loadingSection.style.visibility = "hidden";
 
     if (crimeCount === 0) {
         // TODO: Less intrusive alert.
@@ -64,8 +69,8 @@ window.addEventListener("load", async () => {
         await changeLocation(e["latlng"]["lat"], e["latlng"]["lng"]);
     });
 
-    const latLng = await here.findPlace("portsmouth");
-
+    // Load initial location.
     map.setupMap();
-    await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
+    // Salisbury as the default starting location.
+    await changeLocation(51.067182846365604, -1.797895431518555, true);
 });

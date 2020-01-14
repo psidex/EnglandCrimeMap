@@ -32,6 +32,13 @@ input[type=text] {
     width: 25vw;
 }
 
-#crimeCount {
-    margin: auto;
+#loadingSection {
+    position: absolute;
+    z-index: 999;
+    text-align: center;
+    visibility: hidden;
+    /* https://css-tricks.com/centering-css-complete-guide/#center-horizontally-and-vertically */
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%);
 }
