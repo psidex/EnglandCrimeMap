@@ -4,16 +4,26 @@ import * as stats from "./stats.js";
 import * as here from "./here.js";
 
 const searchBox = document.getElementById("searchBox");
+const crimeCountElement = document.getElementById("crimeCount");
 
-async function searchBoxSearch() {
-    if (searchBox.value !== "") {
-        const latLng = await here.findPlace(searchBox.value);
+// Change location of crimes being shown.
+// TODO: Show user that data is being loaded and processed.
+async function changeLocation(lat, lng, focus=false) {
+    map.clearMarkers();
 
-        map.clearMarkers();
-        map.focusMap(latLng["Latitude"], latLng["Longitude"], 14);
+    if (focus) {
+        map.focusMap(lat, lng, 14);
+    }
 
-        const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(latLng["Latitude"], latLng["Longitude"], "2018", "01");
-        stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(lat, lng, "2018", "01");
+
+    crimeCountElement.innerText = `Crime Count: ${crimeCount}`;
+    map.drawCrimeRadius(lat, lng);
+    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+
+    if (crimeCount === 0) {
+        // TODO: Less intrusive alert.
+        alert("No crimes!");
     }
 }
 
@@ -44,15 +54,18 @@ async function processAndMarkCrimes(lat, lng, year, month) {
 window.addEventListener("load", async () => {
     // Setup events.
     searchBox.addEventListener("keyup", async function(event) {
-        if (event.key === "Enter") {
-            await searchBoxSearch();
+        if (event.key === "Enter" && searchBox.value !== "") {
+            const latLng = await here.findPlace(searchBox.value);
+            await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
         }
     });
 
-    const latLng = await here.findPlace("portsmouth");
-    map.setupMap();
-    map.focusMap(latLng["Latitude"], latLng["Longitude"], 14);
+    map.setMapOnClick(async (e) => {
+        await changeLocation(e["latlng"]["lat"], e["latlng"]["lng"]);
+    });
 
-    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(latLng["Latitude"], latLng["Longitude"], "2018", "01");
-    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+    const latLng = await here.findPlace("portsmouth");
+
+    map.setupMap();
+    await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
 });

@@ -1,11 +1,15 @@
 // Store the current markers and where they are.
 let currentMarkers = [];
 let currentMarkerLocations = [];
+let crimeRadiusCircle = null;
 
 let map = L.map("mainMap");
 
 // Clear memory of all markers.
 export function clearMarkers() {
+    if (crimeRadiusCircle !== null) {
+        map.removeLayer(crimeRadiusCircle);
+    }
     currentMarkers.forEach(marker => {map.removeLayer(marker);});
     currentMarkerLocations = [];
     currentMarkers = [];
@@ -24,6 +28,15 @@ export function setupMap() {
             accessToken: "pk.eyJ1IjoidGhhdGd1eXdpdGh0aGF0bmFtZSIsImEiOiJjazVkOTlqeHExeWxtM21wYW02eWN1aWE2In0.aCbFj3kayrTKS9dQ7vhXSA"
         }
     ).addTo(map);
+}
+
+// Draws a circle showing the area covered by the crime API.
+export function drawCrimeRadius(lat, lng) {
+    crimeRadiusCircle = L.circle([lat, lng], {
+        color: "red",
+        fillOpacity: 0,
+        radius: 1609.34  // 1 mile in km.
+    }).addTo(map);
 }
 
 // Takes a crime category, a lat, and a lng. Add a marker to the map with a popup that shows the category.
@@ -46,4 +59,8 @@ export function addCrimeMarker(category, lat, lng) {
         currentMarkerLocations.push(location);
         currentMarkers.push(m);
     }
+}
+
+export function setMapOnClick(func) {
+    map.on("click", func);
 }
