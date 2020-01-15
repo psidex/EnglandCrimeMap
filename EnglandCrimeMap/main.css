@@ -14,6 +14,10 @@ section {
     height: 100%;
 }
 
+#left, #right {
+    z-index: -1;
+}
+
 #right {
     left: 50vw;
 }
@@ -32,13 +36,10 @@ input[type=text] {
     width: 25vw;
 }
 
-#loadingSection {
-    position: absolute;
-    z-index: 999;
-    text-align: center;
+#loadingImage {
+    display: block;
+    z-index: 1;
     visibility: hidden;
-    /* https://css-tricks.com/centering-css-complete-guide/#center-horizontally-and-vertically */
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%);
+    margin: auto;
+    padding-top: 30vh;
 }

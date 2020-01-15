@@ -5,15 +5,15 @@ import * as here from "./here.js";
 
 const searchBox = document.getElementById("searchBox");
 const crimeCountElement = document.getElementById("crimeCount");
-const loadingSection = document.getElementById("loadingSection");
+const loadingImage = document.getElementById("loadingImage");
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
-    loadingSection.style.visibility = "visible";
+    loadingImage.style.visibility = "visible";
+    loadingImage.style.display = "block";
 
     map.clearMarkers();
 
-    console.log(lat, lng);
     if (focus) {
         map.focusMap(lat, lng, 14);
     }
@@ -24,7 +24,8 @@ async function changeLocation(lat, lng, focus=false) {
     map.drawCrimeRadius(lat, lng);
     stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
 
-    loadingSection.style.visibility = "hidden";
+    loadingImage.style.visibility = "hidden";
+    loadingImage.style.display = "none";
 
     if (crimeCount === 0) {
         // TODO: Less intrusive alert.
