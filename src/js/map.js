@@ -72,10 +72,10 @@ export function setMapOnClick(func) {
     });
 }
 
-export function disableInteraction() {
+export function disableClickEvent() {
     mapClickEventDisabled = true;
 }
 
-export function enableInteraction() {
+export function enableClickEvent() {
     mapClickEventDisabled = false;
 }

@@ -10,7 +10,7 @@ let loadingBar = undefined;
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
-    map.disableInteraction();
+    map.disableClickEvent();
 
     // Show Loading bar.
     loadingBarDiv.style.visibility = "visible";
@@ -64,7 +64,7 @@ async function changeLocation(lat, lng, focus=false) {
     // Reset loading bar.
     loadingBar.animate(0);
 
-    map.enableInteraction();
+    map.enableClickEvent();
 }
 
 window.addEventListener("load", async () => {
