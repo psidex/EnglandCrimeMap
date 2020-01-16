@@ -10,43 +10,27 @@ let loadingBar = undefined;
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
+    // Show Loading bar.
     loadingBarDiv.style.visibility = "visible";
     loadingBarDiv.style.display = "block";
 
+    // Clear map markers.
     map.clearMarkers();
 
+    // Change map focus.
     if (focus) {
         map.focusMap(lat, lng, 14);
     }
 
-    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(lat, lng);
-
-    crimeCountElement.innerText = `Crime Count: ${crimeCount}`;
-    map.drawCrimeRadius(lat, lng);
-    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
-
-    loadingBarDiv.style.visibility = "hidden";
-    loadingBarDiv.style.display = "none";
-
-    if (crimeCount === 0) {
-        // TODO: Less intrusive alert.
-        alert("No crimes!");
-    }
-
-    // Reset loading bar.
-    loadingBar.animate(0);
-}
-
-// Takes a place and date, adds markers for them, returns the total crime count and the frequency statistics.
-async function processAndMarkCrimes(lat, lng) {
+    // Get array of all crimes.
     const crimeDataArray = await crimes.getCrimes(lat, lng, (month) => {
         loadingBar.animate(month / 12);
     });
 
+    // Place markers for crimes and calculate crime frequency.
     const crimeCategoryFreq = {};
 
     for (const crimeObj of crimeDataArray) {
-
         // Process frequency of crime.
         if (crimeCategoryFreq[crimeObj.category] === undefined) {
             crimeCategoryFreq[crimeObj.category] = 1;
@@ -58,10 +42,27 @@ async function processAndMarkCrimes(lat, lng) {
         const lat = parseFloat(crimeObj.location.latitude);
         const lng = parseFloat(crimeObj.location.longitude);
         map.addCrimeMarker(crimeObj.category, lat, lng);
-
     }
 
-    return [crimeDataArray.length, crimeCategoryFreq];
+    // Update text.
+    const crimeCount = crimeDataArray.length;
+    crimeCountElement.innerText = `Crime Count: ${crimeCount}`;
+
+    // Update map and stats.
+    map.drawCrimeRadius(lat, lng);
+    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+
+    // Hide loading bar.
+    loadingBarDiv.style.visibility = "hidden";
+    loadingBarDiv.style.display = "none";
+
+    if (crimeCount === 0) {
+        // TODO: Less intrusive alert.
+        alert("No crimes!");
+    }
+
+    // Reset loading bar.
+    loadingBar.animate(0);
 }
 
 window.addEventListener("load", async () => {
