@@ -5,12 +5,13 @@ import * as here from "./here.js";
 
 const searchBox = document.getElementById("searchBox");
 const crimeCountElement = document.getElementById("crimeCount");
-const loadingImage = document.getElementById("loadingImage");
+const loadingBarDiv = document.getElementById("loadingBar");
+let loadingBar = undefined;
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
-    loadingImage.style.visibility = "visible";
-    loadingImage.style.display = "block";
+    loadingBarDiv.style.visibility = "visible";
+    loadingBarDiv.style.display = "block";
 
     map.clearMarkers();
 
@@ -18,24 +19,30 @@ async function changeLocation(lat, lng, focus=false) {
         map.focusMap(lat, lng, 14);
     }
 
-    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(lat, lng, "2018", "01");
+    const [crimeCount, crimeCategoryFreq] = await processAndMarkCrimes(lat, lng);
 
     crimeCountElement.innerText = `Crime Count: ${crimeCount}`;
     map.drawCrimeRadius(lat, lng);
     stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
 
-    loadingImage.style.visibility = "hidden";
-    loadingImage.style.display = "none";
+    loadingBarDiv.style.visibility = "hidden";
+    loadingBarDiv.style.display = "none";
 
     if (crimeCount === 0) {
         // TODO: Less intrusive alert.
         alert("No crimes!");
     }
+
+    // Reset loading bar.
+    loadingBar.animate(0);
 }
 
 // Takes a place and date, adds markers for them, returns the total crime count and the frequency statistics.
-async function processAndMarkCrimes(lat, lng, year, month) {
-    const crimeDataArray = await crimes.getCrimes(lat, lng, year, month);
+async function processAndMarkCrimes(lat, lng) {
+    const crimeDataArray = await crimes.getCrimes(lat, lng, (month) => {
+        loadingBar.animate(month / 12);
+    });
+
     const crimeCategoryFreq = {};
 
     for (const crimeObj of crimeDataArray) {
@@ -70,8 +77,35 @@ window.addEventListener("load", async () => {
         await changeLocation(e["latlng"]["lat"], e["latlng"]["lng"]);
     });
 
-    // Load initial location.
+    // Setup progress bar.
+    // https://progressbarjs.readthedocs.io/en/latest/api/shape/
+    loadingBar = new ProgressBar.Circle("#loadingBar", {
+        duration: 100,
+        color: "#ff0000",
+        fill: "rgba(50, 50, 50, 0.5)",
+        text: {
+            autoStyleContainer: false,
+            style: {
+                color: "black",
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                padding: 0,
+                margin: 0,
+                transform: {
+                    prefix: true,
+                    value: "translate(-50%, -50%)"
+                }
+            }
+        },
+        step: function(state, circle) {
+            const value = Math.round(circle.value() * 100);
+            circle.setText(value);
+        }
+    });
+
     map.setupMap();
+
     // Salisbury as the default starting location.
     await changeLocation(51.067182846365604, -1.797895431518555, true);
 });

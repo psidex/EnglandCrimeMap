@@ -14,7 +14,9 @@
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
-    <link rel="stylesheet" href="main.css">
+    <script type="text/javascript" src="js/progressbar.min.js"></script>
+
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
@@ -26,7 +28,11 @@
         <div id="searchContainer">
             <input id="searchBox" type="text" placeholder="Search Place Name...">
         </div>
+
+        <h1>Data for crimes in 2019</h1>
+
         <h2 id="crimeCount">Crime Count: </h2>
+
         <figure class="highcharts-figure">
             <div id="crimeFreqContainer"></div>
 <!--            <p class="highcharts-description">-->
@@ -37,8 +43,7 @@
         </figure>
     </section>
 
-    <!-- TODO: A better gif -->
-    <img id="loadingImage" src="loading.gif">
+    <div id="loadingBar" class="progress"></div>
 
     <script type="module"  src="js/main.js"></script>
 </body>

@@ -36,10 +36,15 @@ input[type=text] {
     width: 25vw;
 }
 
-#loadingImage {
-    display: block;
-    z-index: 1;
+#loadingBar {
+    display: none;
     visibility: hidden;
-    margin: auto;
-    padding-top: 30vh;
+
+    height: 30vh;
+    width: 30vh;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
