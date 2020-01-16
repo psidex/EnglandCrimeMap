@@ -10,14 +10,14 @@ let loadingBar = undefined;
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
+    map.disableInteraction();
+
     // Show Loading bar.
     loadingBarDiv.style.visibility = "visible";
     loadingBarDiv.style.display = "block";
 
-    // Clear map markers.
     map.clearMarkers();
 
-    // Change map focus.
     if (focus) {
         map.focusMap(lat, lng, 14);
     }
@@ -63,6 +63,8 @@ async function changeLocation(lat, lng, focus=false) {
 
     // Reset loading bar.
     loadingBar.animate(0);
+
+    map.enableInteraction();
 }
 
 window.addEventListener("load", async () => {

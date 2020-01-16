@@ -3,6 +3,8 @@ let currentMarkers = [];
 let currentMarkerLocations = [];
 let crimeRadiusCircle = null;
 
+let mapClickEventDisabled = false;
+
 let map = L.map("mainMap");
 
 // Clear memory of all markers.
@@ -62,5 +64,18 @@ export function addCrimeMarker(category, lat, lng) {
 }
 
 export function setMapOnClick(func) {
-    map.on("click", func);
+    // Only runs function if map is not disabled.
+    map.on("click", (e) => {
+        if (!mapClickEventDisabled) {
+            func(e);
+        }
+    });
+}
+
+export function disableInteraction() {
+    mapClickEventDisabled = true;
+}
+
+export function enableInteraction() {
+    mapClickEventDisabled = false;
 }
