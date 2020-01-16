@@ -69,10 +69,14 @@ async function changeLocation(lat, lng, focus=false) {
 
 window.addEventListener("load", async () => {
     // Setup events.
+
+    // TODO: What happens when user uses search box whilst loading a new location?
     searchBox.addEventListener("keyup", async function(event) {
         if (event.key === "Enter" && searchBox.value !== "") {
             const latLng = await here.findPlace(searchBox.value);
             await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
+            // Reset search box.
+            searchBox.value = "";
         }
     });
 
@@ -85,7 +89,7 @@ window.addEventListener("load", async () => {
     loadingBar = new ProgressBar.Circle("#loadingBar", {
         duration: 100,
         color: "#ff0000",
-        fill: "rgba(50, 50, 50, 0.5)",
+        fill: "rgba(257, 255, 250, 0.5)",
         text: {
             autoStyleContainer: false,
             style: {

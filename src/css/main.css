@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    font-family: "Fira Sans", sans-serif;
 }
 
 section {
@@ -8,18 +9,6 @@ section {
     width: 50vw;
     margin: 0;
     padding: 0;
-}
-
-#mainMap {
-    height: 100%;
-}
-
-#left, #right {
-    z-index: -1;
-}
-
-#right {
-    left: 50vw;
 }
 
 input[type=text] {
@@ -31,6 +20,23 @@ input[type=text] {
     padding: 0.5em 0.5em;
 }
 
+h1 {
+    font-size: 2em;
+}
+
+#mainMap {
+    height: 100%;
+}
+
+#left, #right {
+    z-index: -1;
+}
+
+#right {
+    text-align: center;
+    left: 50vw;
+}
+
 #searchContainer {
     margin: 1em auto auto;
     width: 25vw;
@@ -40,8 +46,8 @@ input[type=text] {
     display: none;
     visibility: hidden;
 
-    height: 30vh;
-    width: 30vh;
+    height: 10vh;
+    width: 10vh;
 
     position: absolute;
     top: 50%;

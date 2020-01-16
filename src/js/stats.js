@@ -1,4 +1,4 @@
-export function createPieChart(containerName, title, seriesName, seriesData) {
+export function createPieChart(containerName, seriesName, seriesData) {
     Highcharts.chart(containerName, {
         chart: {
             plotBackgroundColor: null,
@@ -7,7 +7,7 @@ export function createPieChart(containerName, title, seriesName, seriesData) {
             type: "pie"
         },
         title: {
-            text: title
+            text: ""
         },
         tooltip: {
             pointFormat: "{series.name}: <b>{point.percentage:.1f}%</b>"
@@ -50,5 +50,5 @@ export function createCrimeFreqChart(crimeCount, crimeCategoryFreq) {
         );
     }
 
-    createPieChart("crimeFreqContainer", "Crime Frequency", "Crime Frequency", crimeFreqChartSeriesData);
+    createPieChart("crimeFreqContainer", "Crime Frequency", crimeFreqChartSeriesData);
 }
