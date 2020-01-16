@@ -22,8 +22,8 @@ async function changeLocation(lat, lng, focus=false) {
         map.focusMap(lat, lng, 14);
     }
 
-    // Get array of all crimes.
-    const crimeDataArray = await crimes.getCrimes(lat, lng, (month) => {
+    // Get data for all crimes in 2019 at the given location.
+    const [crimeDataArray, crimesPerMonth] = await crimes.getCrimes(lat, lng, (month) => {
         loadingBar.animate(month / 12);
     });
 
@@ -51,6 +51,7 @@ async function changeLocation(lat, lng, focus=false) {
     // Update map and stats.
     map.drawCrimeRadius(lat, lng);
     stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+    stats.createCrimeOverTimeChart(crimesPerMonth);
 
     // Hide loading bar.
     loadingBarDiv.style.visibility = "hidden";

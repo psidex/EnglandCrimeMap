@@ -35,6 +35,9 @@ h1 {
 #right {
     text-align: center;
     left: 50vw;
+    overflow: scroll;
+    /* Don't show horizontal scrollbar. */
+    overflow-x: hidden;
 }
 
 #searchContainer {

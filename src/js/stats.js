@@ -1,5 +1,19 @@
-export function createPieChart(containerName, seriesName, seriesData) {
-    Highcharts.chart(containerName, {
+// crimeCount should be a number, crimeCategoryFreq should be an object of category:count. This then takes them and
+// creates a pie chart showing the frequency of each category.
+export function createCrimeFreqChart(crimeCount, crimeCategoryFreq) {
+    const crimeFreqChartSeriesData = [];
+    const onePercent = crimeCount / 100;
+
+    for (const cat in crimeCategoryFreq) {
+        crimeFreqChartSeriesData.push(
+            {
+                name: cat,
+                y: crimeCategoryFreq[cat] / onePercent
+            }
+        );
+    }
+
+    Highcharts.chart("crimeFreqContainer", {
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -28,27 +42,52 @@ export function createPieChart(containerName, seriesName, seriesData) {
             }
         },
         series: [{
-            name: seriesName,
+            name: "Crime Frequency",
             colorByPoint: true,
-            data: seriesData
+            data: crimeFreqChartSeriesData
         }]
     });
 }
 
-// crimeCount should be a number, crimeCategoryFreq should be an object of category:count. This then takes them and
-// creates a pie chart showing the frequency of each category.
-export function createCrimeFreqChart(crimeCount, crimeCategoryFreq) {
-    const crimeFreqChartSeriesData = [];
-    const onePercent = crimeCount / 100;
+// Takes an object of {month: crimeCount} and creates the bar graph.
+export function createCrimeOverTimeChart(crimesPerMonth) {
+    let crimes = [];
 
-    for (const cat in crimeCategoryFreq) {
-        crimeFreqChartSeriesData.push(
-            {
-                name: cat,
-                y: crimeCategoryFreq[cat] / onePercent
-            }
-        );
+    for (const month in crimesPerMonth) {
+        crimes.push(crimesPerMonth[month]);
     }
 
-    createPieChart("crimeFreqContainer", "Crime Frequency", crimeFreqChartSeriesData);
+    Highcharts.chart("crimeOverTimeContainer", {
+        chart: {
+            type: "column"
+        },
+        title: {
+            text: ""
+        },
+        xAxis: {
+            categories: [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec"
+            ]
+        },
+        yAxis: {
+            title: {
+                text: "Crime Count"
+            }
+        },
+        series: [{
+            name: "",
+            data: crimes
+        }]
+    });
 }
