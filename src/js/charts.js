@@ -63,6 +63,9 @@ export function createCrimeOverTimeChart(crimesPerMonth) {
         title: {
             text: ""
         },
+        legend: {
+            enabled: false
+        },
         xAxis: {
             categories: [
                 "Jan",

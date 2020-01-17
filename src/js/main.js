@@ -1,6 +1,6 @@
 import * as map from "./map.js";
 import * as crimes from "./crime.js";
-import * as stats from "./stats.js";
+import * as charts from "./charts.js";
 import * as here from "./here.js";
 
 let loading = false;  // For disabling the search box when loading.
@@ -55,8 +55,8 @@ async function changeLocation(lat, lng, focus=false) {
 
     // Update map and stats.
     map.drawCrimeRadius(lat, lng);
-    stats.createCrimeFreqPie(crimeCount, crimeCategoryFreq);
-    stats.createCrimeOverTimeChart(crimesPerMonth);
+    charts.createCrimeFreqPie(crimeCount, crimeCategoryFreq);
+    charts.createCrimeOverTimeChart(crimesPerMonth);
 
     // Hide and reset loading bar.
     loadingBarDiv.style.visibility = "hidden";
