@@ -3,6 +3,7 @@ import * as crimes from "./crime.js";
 import * as stats from "./stats.js";
 import * as here from "./here.js";
 
+let loading = false;  // For disabling the search box when loading.
 const searchBox = document.getElementById("searchBox");
 const crimeCountElement = document.getElementById("crimeCount");
 const loadingBarDiv = document.getElementById("loadingBar");
@@ -11,6 +12,7 @@ let loadingBar = undefined;
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
     map.disableClickEvent();
+    loading = true;
 
     // Show Loading bar.
     loadingBarDiv.style.visibility = "visible";
@@ -50,30 +52,28 @@ async function changeLocation(lat, lng, focus=false) {
 
     // Update map and stats.
     map.drawCrimeRadius(lat, lng);
-    stats.createCrimeFreqChart(crimeCount, crimeCategoryFreq);
+    stats.createCrimeFreqPie(crimeCount, crimeCategoryFreq);
     stats.createCrimeOverTimeChart(crimesPerMonth);
 
-    // Hide loading bar.
+    // Hide and reset loading bar.
     loadingBarDiv.style.visibility = "hidden";
     loadingBarDiv.style.display = "none";
+    loadingBar.animate(0);
+
+    map.enableClickEvent();
+    loading = false;
 
     if (crimeCount === 0) {
         // TODO: Less intrusive alert.
         alert("No crimes!");
     }
-
-    // Reset loading bar.
-    loadingBar.animate(0);
-
-    map.enableClickEvent();
 }
 
 window.addEventListener("load", async () => {
     // Setup events.
 
-    // TODO: What happens when user uses search box whilst loading a new location?
     searchBox.addEventListener("keyup", async function(event) {
-        if (event.key === "Enter" && searchBox.value !== "") {
+        if (event.key === "Enter" && searchBox.value !== "" && loading !== false) {
             const latLng = await here.findPlace(searchBox.value);
             await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
             // Reset search box.
@@ -107,8 +107,7 @@ window.addEventListener("load", async () => {
             }
         },
         step: function(state, circle) {
-            const value = Math.round(circle.value() * 100);
-            circle.setText(value);
+            circle.setText(Math.round(circle.value() * 100));
         }
     });
 

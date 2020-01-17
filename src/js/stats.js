@@ -1,6 +1,5 @@
-// crimeCount should be a number, crimeCategoryFreq should be an object of category:count. This then takes them and
-// creates a pie chart showing the frequency of each category.
-export function createCrimeFreqChart(crimeCount, crimeCategoryFreq) {
+// crimeCount should be a number, crimeCategoryFreq should be an object of category:count.
+export function createCrimeFreqPie(crimeCount, crimeCategoryFreq) {
     const crimeFreqChartSeriesData = [];
     const onePercent = crimeCount / 100;
 
