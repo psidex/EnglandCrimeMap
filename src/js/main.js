@@ -11,6 +11,9 @@ let loadingBar = undefined;
 
 // Change location of crimes being shown.
 async function changeLocation(lat, lng, focus=false) {
+    // Reset loading bar to 0.
+    loadingBar.animate(0, false);
+
     map.disableClickEvent();
     loading = true;
 
@@ -58,7 +61,6 @@ async function changeLocation(lat, lng, focus=false) {
     // Hide and reset loading bar.
     loadingBarDiv.style.visibility = "hidden";
     loadingBarDiv.style.display = "none";
-    loadingBar.animate(0);
 
     map.enableClickEvent();
     loading = false;
@@ -73,7 +75,7 @@ window.addEventListener("load", async () => {
     // Setup events.
 
     searchBox.addEventListener("keyup", async function(event) {
-        if (event.key === "Enter" && searchBox.value !== "" && loading !== false) {
+        if (event.key === "Enter" && searchBox.value !== "" && loading === false) {
             const latLng = await here.findPlace(searchBox.value);
             await changeLocation(latLng["Latitude"], latLng["Longitude"], true);
             // Reset search box.
