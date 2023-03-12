@@ -27,7 +27,7 @@ async function changeLocation(lat, lng, focus=false) {
         map.focusMap(lat, lng, 14);
     }
 
-    // Get data for all crimes in 2019 at the given location.
+    // Get data for all crimes in last year at the given location.
     const [crimeDataArray, crimesPerMonth] = await crimes.getCrimes(lat, lng, (month) => {
         loadingBar.animate(month / 12);
     });
@@ -72,6 +72,8 @@ async function changeLocation(lat, lng, focus=false) {
 }
 
 window.addEventListener("load", async () => {
+    document.getElementById("title").innerText = `Data for crimes in ${(new Date()).getFullYear() - 1}`;
+
     // Setup events.
 
     searchBox.addEventListener("keyup", async function(event) {
